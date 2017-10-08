@@ -2,9 +2,9 @@ import json
 from ioer.IO import IO
 from feature_extractor.image.Image import Image
 from pandas import DataFrame
-from feature_extractor.features.ImagePixelsWithColouredNeighbours import ImagePixelsOnlyColouredNeighbours, ColouredPixelsWithColouredNeighbours
-from feature_extractor.features.ImageColouredPixelsFeature import ImageColouredPixelsFeature
-from feature_extractor.features.ImageFeatureExtractor import ImageFeatureExtractor, ColouredPixels
+from feature_extractor.features.ImageFeatureExtractor import ColouredPixelsExtractor, ColouredPixelsColouredNeighboursExtractor
+from feature_extractor.image.Pixel import BlackPixel, WhitePixel
+
 
 def open_json_file(file_location, file_name, directory_separator = "/"):
     with open(file_location + directory_separator + file_name, "r") as file:
@@ -26,7 +26,13 @@ print(DataFrame(image.pixels))
  #   for column_index in range(image.width):
   #      print("Nighbours of pixel ", column_index, ", ", row_index, " : ", PixelNeighbours(0).get_feature(image, column_index, row_index))
 
-print("number of black pixels", len(ColouredPixels(1).get_feature(image)))
+#print("number of black pixels", len(ColouredPixels(1).get_feature(image)))
+black_colour = BlackPixel()
+white_colour = WhitePixel()
+print("number of black pixels", ColouredPixelsExtractor(black_colour.get_colour()).get_feature(image))
+print("black pixels with black neighbours", ColouredPixelsColouredNeighboursExtractor(black_colour.get_colour(), white_colour.get_colour()).get_feature(image))
+
+#print("number of black pixels with right, left, upper, and lower black neighbours", ColouredPixelsColouredNeighbours(black_colour, black_colour, white_colour).get_feature(image))
 # neighbours_to_get = ["right", "left", "upper", "lower"]
 #
 # image_pixels_with_black_pixel_neighbours = ColouredPixelsWithColouredNeighbours(0, 1, 1).get_feature(image)

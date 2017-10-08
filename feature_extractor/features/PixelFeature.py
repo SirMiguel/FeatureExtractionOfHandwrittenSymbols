@@ -1,7 +1,7 @@
-class PixelFeature:
+#class PixelFeature:
 
-    def __init__(self):
-        pass
+#    def __init__(self):
+ #       pass
 
-    def get_feature(self, pixel):
-        raise NotImplementedError("PixelFeature.get_feature() needs to be overridden.")
+#    def does_pixel_match_feature(self, pixel):
+ #       raise NotImplementedError("PixelFeature.get_feature() needs to be overridden.")

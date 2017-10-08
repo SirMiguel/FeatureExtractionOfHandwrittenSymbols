@@ -1,16 +1,9 @@
-from feature_extractor.features.PixelColour import PixelColour
-from feature_extractor.features.ImageFeature import ImageFeature
-
-class PixelNeighbours(ImageFeature):
+class PixelNeighbours:
     def __init__(self, null_pixel_value):
-        ImageFeature.__init__(self)
         self.null_pixel_value = null_pixel_value
 
-    def get_feature(self, image):
-        neighbours_of_pixels = []
-        for pixel_x in range(image.get_width()):
-            neighbours_of_pixels.append([self.get_neighbours(image, pixel_x, pixel_y) for pixel_y in range(image.get_height())])
-        return neighbours_of_pixels
+    def get_feature(self, image, pixel_x, pixel_y):
+        return self.get_neighbours(image, pixel_x, pixel_y)
 #get brightest layer
 
     def get_neighbours(self, image, pixel_x, pixel_y):
@@ -93,6 +86,22 @@ class PixelNeighbours(ImageFeature):
     def is_pixel_right_border(self, image_width, pixel_x):
         return pixel_x == image_width - 1
 
+
+# class PixelColouredNeighbours(PixelNeighbours):
+#     def __init__(self, pixel_colour_feature, null_pixel_value):
+#         PixelNeighbours.__init__(self, null_pixel_value)
+#         self.pixel_colour_feature = pixel_colour_feature
+#
+#     def get_feature(self, image):
+#         neighbours_of_pixels = []
+#         for pixel_x in range(image.get_width()):
+#             for pixel_y in range(image.get_height()):
+#                 coloured_neighbours = dict()
+#                 for neighbour, pixel in self.get_neighbours(image, pixel_x, pixel_y).items():
+#                     if self.pixel_colour_feature.does_pixel_match_feature(pixel):
+#                         coloured_neighbours.update({neighbour : pixel})
+#                 neighbours_of_pixels.append(coloured_neighbours)
+#         return neighbours_of_pixels
   #  def is_pixel_top_left_border(self, pixel_x, pixel_y):
    #     return self.is_pixel_top_border(pixel_y) and self.is_pixel_left_border(pixel_x)
 
