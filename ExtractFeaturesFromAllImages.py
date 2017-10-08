@@ -1,9 +1,10 @@
 import json
 from ioer.IO import IO
-from numpy import array
 from feature_extractor.image.Image import Image
-from feature_extractor.features.PixelNeighbour import Neighbour
 from pandas import DataFrame
+from feature_extractor.features.ImagePixelsWithColouredNeighbours import ImagePixelsOnlyColouredNeighbours, ColouredPixelsWithColouredNeighbours
+from feature_extractor.features.ImageColouredPixelsFeature import ImageColouredPixelsFeature
+from feature_extractor.features.ImageFeatureExtractor import ImageFeatureExtractor, ColouredPixels
 
 def open_json_file(file_location, file_name, directory_separator = "/"):
     with open(file_location + directory_separator + file_name, "r") as file:
@@ -21,8 +22,29 @@ image_array = IO().read_csv_as_list("40153628-100-1.csv", "/Users/Michael/Docume
 image = Image(image_array, 16, 16)
 print(DataFrame(image.pixels))
 
-for row_index in range(image.height):
-    for column_index in range(image.width):
-        print("Nighbours of pixel ", column_index, ", ", row_index, " : ", Neighbour(0).get_neighbours(image, column_index, row_index))
+#for row_index in range(image.height):
+ #   for column_index in range(image.width):
+  #      print("Nighbours of pixel ", column_index, ", ", row_index, " : ", PixelNeighbours(0).get_feature(image, column_index, row_index))
 
-
+print("number of black pixels", len(ColouredPixels(1).get_feature(image)))
+# neighbours_to_get = ["right", "left", "upper", "lower"]
+#
+# image_pixels_with_black_pixel_neighbours = ColouredPixelsWithColouredNeighbours(0, 1, 1).get_feature(image)
+# black_pixels_with_neighbours = []
+#
+# for neighbours in image_pixels_with_black_pixel_neighbours:
+#     match = True
+#     for neighbour in neighbours_to_get:
+#         if neighbour not in neighbours:
+#             match = False
+#
+#     if match:
+#         black_pixels_with_neighbours.append(neighbours)
+#
+# at_most_black_neighbours = []
+# for neighbours in image_pixels_with_black_pixel_neighbours:
+#     if len(neighbours) <= 3:
+#         at_most_black_neighbours.append(neighbours)
+#
+# print("number of black pixels with right left upper lower neighbours", len(black_pixels_with_neighbours))
+# print("number of black pixels with at most 3 black neighbours", len(at_most_black_neighbours))

@@ -1,7 +1,17 @@
+from feature_extractor.features.PixelColour import PixelColour
+from feature_extractor.features.ImageFeature import ImageFeature
 
-class Neighbour:
+class PixelNeighbours(ImageFeature):
     def __init__(self, null_pixel_value):
+        ImageFeature.__init__(self)
         self.null_pixel_value = null_pixel_value
+
+    def get_feature(self, image):
+        neighbours_of_pixels = []
+        for pixel_x in range(image.get_width()):
+            neighbours_of_pixels.append([self.get_neighbours(image, pixel_x, pixel_y) for pixel_y in range(image.get_height())])
+        return neighbours_of_pixels
+#get brightest layer
 
     def get_neighbours(self, image, pixel_x, pixel_y):
         neighbours = dict()
@@ -97,3 +107,21 @@ class Neighbour:
 
 
 
+# class ColouredPixelNeighbours(PixelNeighbours):
+#     def __init__(self, null_pixel_value, colour_to_match):
+#         PixelNeighbours.__init__(self, null_pixel_value)
+#         self.colour_to_match = PixelColour(colour_to_match)
+#
+#     def get_feature(self, image, pixel_x, pixel_y):
+#         pixel_neighbours = PixelNeighbours.get_feature(self, image, pixel_x, pixel_y)
+#         coloured_pixel_neighbours = dict()
+#         if self.has_coloured_neighbours(pixel_neighbours):
+#             for pixel_neighbour in pixel_neighbours:
+#                 if self.colour_to_match.get_feature(pixel_neighbour):
+#                     coloured_pixel_neighbours.update(pixel_neighbour)
+#
+#
+#     def has_coloured_neighbours(self, pixel_neighbours):
+#         for pixel_neighbour in pixel_neighbours:
+#             if self.colour_to_match.get_feature(pixel_neighbour):
+#                 return True
