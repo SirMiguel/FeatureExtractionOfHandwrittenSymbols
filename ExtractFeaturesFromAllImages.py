@@ -2,9 +2,12 @@ import json
 from ioer.IO import IO
 from feature_extractor.image.Image import Image
 from pandas import DataFrame
-from feature_extractor.features.ImageFeatureExtractor import ColouredPixelsExtractor,ColouredPixelsWithColouredNamedNeighboursExtractor, ColouredPixelsWithAtMostColouredNeighbours, ColouredPixelsWithExactlyAsManyColouredNeighbours, ColouredPixelsWithAtLeastAsManyColouredNeighbours, ColouredPixelsWithNoNamedColouredNeighbours, ORComplexImageFeature, RowsWithAtLeastQuantityOfColourPixelsFeatureExtractor, ColumnsWithAtLeastQuantityOfColourPixelsFeatureExtractor, ConnectedColourRegionsInImage, FeatureAsPercentageOfImage, MinusSumComplexImageFeature
+from feature_extractor.features.ImageFeatureExtractor import ColouredPixelsExtractor,ColouredPixelsWithColouredNamedNeighboursExtractor, ColouredPixelsWithAtMostColouredNeighbours, ColouredPixelsWithExactlyAsManyColouredNeighbours, ColouredPixelsWithAtLeastAsManyColouredNeighbours, ColouredPixelsWithNoNamedColouredNeighbours, ORComplexImageFeature, RowsWithAtLeastQuantityOfColourPixelsFeatureExtractor, ColumnsWithAtLeastQuantityOfColourPixelsFeatureExtractor, ConnectedColourRegionsInImage, FeatureAsPercentageOfImage, MinusSumComplexImageFeature, NeuralNetworkFeature
+from feature_extractor.features.neural_networks.NeuralNetwork import AssignmentNeuralNetworkWithWeighsBuilder, AssignmentNeuralNetwork, NewAssignmentNeuralNetworkBuilder
+from feature_extractor.features.neural_networks.Trainer import Trainer, TrainerFitnessMetric
 from feature_extractor.image.Pixel import BlackPixel, WhitePixel
 
+from numpy.random import randn
 
 def open_json_file(file_location, file_name, directory_separator = "/"):
     with open(file_location + directory_separator + file_name, "r") as file:
@@ -17,9 +20,31 @@ def open_json_file_as_map(file_location, file_name):
     json_map = json.loads(json_string)
     return json_map
 
+def get_thing(network_weights):
+    sample_types = [1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 200, 300]
+    hidden_weights = []
+    for layer_weights in network_weights[:-1]:
+        hidden_weights.append(layer_weights)
 
-image_array = IO().read_csv_as_list("40153628-9-10.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/9/")
+    output_layer_data = dict()
+    for sample_type, neuron_weight in zip(sample_types, network_weights[:-1]):
+        output_layer_data.update({sample_type: neuron_weight})
+
+    return AssignmentNeuralNetworkWithWeighsBuilder(network_weights, output_layer_data).build()
+
+
+image_array = IO().read_csv_as_list("40153628-100-10.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/100/")
+image_array_2 = IO().read_csv_as_list("40153628-100-1.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/100/")
+image_array_3 = IO().read_csv_as_list("40153628-100-2.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/100/")
+
+image_array_4 = IO().read_csv_as_list("40153628-1-1.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/1/")
+
+
 image = Image(image_array, 16, 16)
+image2 = Image(image_array_2, 16, 16)
+image3 = Image(image_array_3, 16, 16)
+image4 = Image(image_array_4, 16, 16)
+
 print(DataFrame(image.pixels))
 
 #for row_index in range(image.height):
@@ -29,6 +54,47 @@ print(DataFrame(image.pixels))
 #print("number of black pixels", len(ColouredPixels(1).get_feature(image)))
 black_colour = BlackPixel()
 white_colour = WhitePixel()
+
+sample_types = [1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 200, 300]
+
+
+
+
+
+
+sample_set = [[100, image.get_pixel_vector()]]
+sample_set.append([100, image2.get_pixel_vector()])
+sample_set.append([100, image3.get_pixel_vector()])
+sample_set.append([1, image4.get_pixel_vector()])
+
+
+netwokr_trainer = Trainer((256, 16, 16), (16, 16, 12), TrainerFitnessMetric(sample_set))
+weights = netwokr_trainer.train(10)
+
+sample_types = [1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 200, 300]
+hidden_weights = []
+for layer_weights in weights[:-1]:
+    hidden_weights.append(layer_weights)
+
+output_layer_data = dict()
+output_weights = weights[-1]
+for sample_type, neuron_weight in zip(sample_types, output_weights):
+     output_layer_data.update({sample_type: neuron_weight})
+
+network = AssignmentNeuralNetworkWithWeighsBuilder(hidden_weights, output_layer_data).build()
+
+output_nodes_data = dict()
+output_weights = weights[:-1]
+for weight, sample_type in zip(output_weights, sample_types):
+    output_nodes_data.update({sample_type : weight})
+
+#neural_network = AssignmentNeuralNetworkWithWeighsBuilder(weights[:-1], output_nodes_data).build()
+
+feature_one = NeuralNetworkFeature(network, white_colour.get_colour())
+
+print("1. Actual symbol in image.", feature_one.get_feature(image))
+
+
 print("2. Number of black pixels in the image.", len(ColouredPixelsExtractor(black_colour.get_colour(), white_colour.get_colour()).get_feature(image)))
 #print("black pixels with black neighbours", len(ColouredPixelsColouredNeighboursExtractor(black_colour.get_colour(), black_colour.get_colour(), white_colour.get_colour()).get_feature(image)))
 

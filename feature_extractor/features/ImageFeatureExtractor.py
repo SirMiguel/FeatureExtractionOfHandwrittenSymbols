@@ -8,9 +8,6 @@ class PixelFeatureExtractor:
     def get_feature(self, pixel):
         raise NotImplementedError()
 
-#class PixelNeighbourFeature:
-
-
 class MatchingColourFeatureExtractor(PixelFeatureExtractor):
     def __init__(self, pixel_colour):
         PixelFeatureExtractor.__init__(self)
@@ -382,3 +379,17 @@ class FeatureAsPercentageOfImage(ImageFeatureExtractor):
         for column in image.get_pixels():
             number_of_pixels += len(column)
         return number_of_pixels
+
+
+class NeuralNetworkFeature(ImageFeatureExtractor):
+    def __init__(self, neural_network, null_pixel_value):
+        ImageFeatureExtractor.__init__(self, null_pixel_value)
+        self.neural_network = neural_network
+
+
+    def get_feature(self, image):
+        selfaaware_pixels = ImageFeatureExtractor.get_feature(self, image)
+        pixel_colour_vector = [selfaaware_pixel.get_colour() for selfaaware_pixel in selfaaware_pixels]
+        network_response = self.neural_network.think(pixel_colour_vector)
+
+        return max(network_response, key=network_response.get)

@@ -19,6 +19,6 @@ class Image:
         pixel = self.pixels[pixel_y][pixel_x]
         return pixel
 
- #   def get_pixel_vector(self):
-  #      return [pixel for column in self.pixels for pixel in column]
+    def get_pixel_vector(self):
+       return [pixel for column in self.pixels for pixel in column]
 
