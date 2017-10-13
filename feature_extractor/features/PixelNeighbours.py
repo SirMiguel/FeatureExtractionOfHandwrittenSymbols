@@ -4,7 +4,6 @@ class PixelNeighbours:
 
     def get_feature(self, image, pixel_x, pixel_y):
         return self.get_neighbours(image, pixel_x, pixel_y)
-#get brightest layer
 
     def get_neighbours(self, image, pixel_x, pixel_y):
         neighbours = dict()
@@ -72,8 +71,8 @@ class PixelNeighbours:
             return self.null_pixel_value
         else :
             return image.get_pixel(pixel_x - 1, pixel_y + 1)
-        #TODO check later if need to add get value
 
+    #Methods for future use maybe, currently unused
     def is_pixel_top_border(self, pixel_y):
         return pixel_y == 0
 
@@ -85,52 +84,3 @@ class PixelNeighbours:
 
     def is_pixel_right_border(self, image_width, pixel_x):
         return pixel_x == image_width - 1
-
-
-# class PixelColouredNeighbours(PixelNeighbours):
-#     def __init__(self, pixel_colour_feature, null_pixel_value):
-#         PixelNeighbours.__init__(self, null_pixel_value)
-#         self.pixel_colour_feature = pixel_colour_feature
-#
-#     def get_feature(self, image):
-#         neighbours_of_pixels = []
-#         for pixel_x in range(image.get_width()):
-#             for pixel_y in range(image.get_height()):
-#                 coloured_neighbours = dict()
-#                 for neighbour, pixel in self.get_neighbours(image, pixel_x, pixel_y).items():
-#                     if self.pixel_colour_feature.does_pixel_match_feature(pixel):
-#                         coloured_neighbours.update({neighbour : pixel})
-#                 neighbours_of_pixels.append(coloured_neighbours)
-#         return neighbours_of_pixels
-  #  def is_pixel_top_left_border(self, pixel_x, pixel_y):
-   #     return self.is_pixel_top_border(pixel_y) and self.is_pixel_left_border(pixel_x)
-
-#    def is_pixel_top_right_border(self, image_width, pixel_x, pixel_y):
- #       return self.is_pixel_top_border(pixel_y) and self.is_pixel_right_border(image_width, pixel_x)
-
-#    def is_pixel_bottom_left_border(self, pixel_x, pixel_y):
- #       return self.is_pixel_bottom_border(pixel_y) and self.is_pixel_left_border(pixel_x)
-
-#    def is_pixel_bottom_right_border(self,image_width ,pixel_x, pixel_y):
- #       return self.is_pixel_bottom_border(pixel_y) and self.is_pixel_right_border(image_width, pixel_x)
-
-
-
-# class ColouredPixelNeighbours(PixelNeighbours):
-#     def __init__(self, null_pixel_value, colour_to_match):
-#         PixelNeighbours.__init__(self, null_pixel_value)
-#         self.colour_to_match = PixelColour(colour_to_match)
-#
-#     def get_feature(self, image, pixel_x, pixel_y):
-#         pixel_neighbours = PixelNeighbours.get_feature(self, image, pixel_x, pixel_y)
-#         coloured_pixel_neighbours = dict()
-#         if self.has_coloured_neighbours(pixel_neighbours):
-#             for pixel_neighbour in pixel_neighbours:
-#                 if self.colour_to_match.get_feature(pixel_neighbour):
-#                     coloured_pixel_neighbours.update(pixel_neighbour)
-#
-#
-#     def has_coloured_neighbours(self, pixel_neighbours):
-#         for pixel_neighbour in pixel_neighbours:
-#             if self.colour_to_match.get_feature(pixel_neighbour):
-#                 return True

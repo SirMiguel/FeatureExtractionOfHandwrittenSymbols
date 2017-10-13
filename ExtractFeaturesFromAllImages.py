@@ -4,7 +4,7 @@ from feature_extractor.image.Image import Image
 from pandas import DataFrame
 from feature_extractor.features.ImageFeatureExtractor import ColouredPixelsExtractor,ColouredPixelsWithColouredNamedNeighboursExtractor, ColouredPixelsWithAtMostColouredNeighbours, ColouredPixelsWithExactlyAsManyColouredNeighbours, ColouredPixelsWithAtLeastAsManyColouredNeighbours, ColouredPixelsWithNoNamedColouredNeighbours, ORComplexImageFeature, RowsWithAtLeastQuantityOfColourPixelsFeatureExtractor, ColumnsWithAtLeastQuantityOfColourPixelsFeatureExtractor, ConnectedColourRegionsInImage, FeatureAsPercentageOfImage, MinusSumComplexImageFeature, NeuralNetworkFeature
 from feature_extractor.features.neural_networks.NeuralNetwork import AssignmentNeuralNetworkWithWeighsBuilder, AssignmentNeuralNetwork, NewAssignmentNeuralNetworkBuilder
-from feature_extractor.features.neural_networks.Trainer import Trainer, TrainerFitnessMetric
+from feature_extractor.features.neural_networks.NESTrainer import NESTrainer, AssignmentNeuralNetworkFitnessMetric
 from feature_extractor.image.Pixel import BlackPixel, WhitePixel
 
 from numpy.random import randn
@@ -35,15 +35,17 @@ def get_thing(network_weights):
 
 image_array = IO().read_csv_as_list("40153628-100-10.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/100/")
 image_array_2 = IO().read_csv_as_list("40153628-100-1.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/100/")
-image_array_3 = IO().read_csv_as_list("40153628-100-2.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/100/")
+image_array_3 = IO().read_csv_as_list("40153628-100-5.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/100/")
 
 image_array_4 = IO().read_csv_as_list("40153628-1-1.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/1/")
+image_array_5 = IO().read_csv_as_list("40153628-4-1.csv", "/Users/Michael/Documents/Computer Science/Third Year/AI & Data Analytics - CSC3060/Assignment_1/Data Set/Processed Samples/4/")
 
 
 image = Image(image_array, 16, 16)
 image2 = Image(image_array_2, 16, 16)
 image3 = Image(image_array_3, 16, 16)
 image4 = Image(image_array_4, 16, 16)
+image5 = Image(image_array_5, 16, 16)
 
 print(DataFrame(image.pixels))
 
@@ -66,10 +68,11 @@ sample_set = [[100, image.get_pixel_vector()]]
 sample_set.append([100, image2.get_pixel_vector()])
 sample_set.append([100, image3.get_pixel_vector()])
 sample_set.append([1, image4.get_pixel_vector()])
+sample_set.append([4, image5.get_pixel_vector()])
 
 
-netwokr_trainer = Trainer((256, 16, 16), (16, 16, 12), TrainerFitnessMetric(sample_set))
-weights = netwokr_trainer.train(10)
+netwokr_trainer = NESTrainer((256, 16, 5), (16, 5, 12), AssignmentNeuralNetworkFitnessMetric(sample_set))
+weights = netwokr_trainer.train(5)
 
 sample_types = [1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 200, 300]
 hidden_weights = []
@@ -197,6 +200,9 @@ print("28. Percentage of black pixels with 5 or more black pixel neighbours.", f
 feature_twenty_nine = MinusSumComplexImageFeature([RowsWithAtLeastQuantityOfColourPixelsFeatureExtractor(5, black_colour.get_colour(), white_colour.get_colour()), ColumnsWithAtLeastQuantityOfColourPixelsFeatureExtractor(5, black_colour.get_colour(), white_colour.get_colour())], white_colour.get_colour())
 print("29. (Number of rows with at least five black pixels) minus (number of columns with at least five black pixels).", (feature_twenty_nine.get_feature(image)))
 
+
+print("30. The number of background areas in the image. A background area is defined as an area of only white pixels. This is useful for detecting areas of loops/rings in an image"
+      ", as the interior of the ring will be an area of background colour", len(ConnectedColourRegionsInImage(white_colour.get_colour(), black_colour.get_colour()).get_feature(image)))
 #print("number of black pixels with right, left, upper, and lower black neighbours", ColouredPixelsColouredNeighbours(black_colour, black_colour, white_colour).get_feature(image))
 #
 # image_pixels_with_black_pixel_neighbours = ColouredPixelsWithColouredNeighbours(0, 1, 1).get_feature(image)

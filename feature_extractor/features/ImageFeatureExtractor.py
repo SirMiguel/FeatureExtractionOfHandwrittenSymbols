@@ -294,6 +294,15 @@ class ConnectedColourRegionsInImage(ColouredPixelsExtractor):
         ColouredPixelsExtractor.__init__(self, pixel_colour, null_pixel_value)
         self.neighbour_extractor = PixelNeighbours(null_pixel_value)
 
+        # Psudeocode inspriing methodolgy
+        # for each pixel check all current blobs to see if it is in there
+        # if not add pixel to new blob,
+        # add to pixel neighbours to blob neighbours
+        # while blob neighbours:
+        # get the neighbours neighbour:
+        # if they are of the same colour add them to the new blob
+        # add neighbours to blob neighbours
+
     def get_feature(self, image):
         coloured_pixels = ColouredPixelsExtractor.get_feature(self, image)
         pixel_blobs = []
@@ -334,7 +343,6 @@ class ConnectedColourRegionsInImage(ColouredPixelsExtractor):
                     selfaware_neighbours.append(neighbour)
         return selfaware_neighbours
 
-    #def has_coloured_neighbour
     def get_coloured_neighbours_as_selfaware_pixels(self, image, pixel):
         selfaware_neighbours = []
         for neighbour_name, neighbour_colour in pixel.neighbours.items():
@@ -347,14 +355,6 @@ class ConnectedColourRegionsInImage(ColouredPixelsExtractor):
                                                            self.neighbour_extractor.get_neighbours(image, neighbour_x, neighbour_y)))
         return selfaware_neighbours
 
-
-        # for each pixel check all current blobs to see if it is in there
-            # if not add pixel to new blob,
-            # add to pixel neighbours to blob neighbours
-            # while blob neighbours:
-                # get the neighbours neighbour:
-                # if they are of the same colour add them to the new blob
-                # add neighbours to blob neighbours
 
     def do_pixel_positions_match(self, neighbour_x, neighbour_y, pixel):
         return pixel.get_position_x() == neighbour_x and pixel.get_position_y() == neighbour_y
@@ -386,10 +386,15 @@ class NeuralNetworkFeature(ImageFeatureExtractor):
         ImageFeatureExtractor.__init__(self, null_pixel_value)
         self.neural_network = neural_network
 
-
     def get_feature(self, image):
         selfaaware_pixels = ImageFeatureExtractor.get_feature(self, image)
-        pixel_colour_vector = [selfaaware_pixel.get_colour() for selfaaware_pixel in selfaaware_pixels]
-        network_response = self.neural_network.think(pixel_colour_vector)
+        pixel_colour_vector = self.get_pixel_colour_vector(selfaaware_pixels)
+        network_response = self.get_network_thoughts(pixel_colour_vector)
+        return max(network_response, key=network_response.get) #Return the sample key of the most probable key
 
-        return max(network_response, key=network_response.get)
+    def get_pixel_colour_vector(self, selfaaware_pixels):
+        pixel_colour_vector = [selfaaware_pixel.get_colour() for selfaaware_pixel in selfaaware_pixels]
+        return pixel_colour_vector
+
+    def get_network_thoughts(self, pixel_colour_vector):
+        return self.neural_network.think(pixel_colour_vector)

@@ -1,4 +1,4 @@
-from feature_extractor.features.neural_networks.Neuron import RectifiedLinearUnit, Neuron, ClassifierFunction
+from feature_extractor.features.neural_networks.Neuron import RectifiedLinearUnit, Neuron, ClassifierRELU
 from numpy.random import randn
 
 class NeuralNetwork:
@@ -58,8 +58,8 @@ class NewAssignmentNeuralNetworkBuilder:
         for depth_of_layer in self.depth_of_each_layer:
             hidden_layers.append(LayerBuilder(RectifiedLinearUnit).build(self.get_new_weights_for_neuron(depth_of_layer)))
 
-        output_layer = LayerBuilder(ClassifierFunction).build(self.get_new_weights_for_neuron(len(self.sample_types)),
-                                                              self.sample_types)
+        output_layer = LayerBuilder(ClassifierRELU).build(self.get_new_weights_for_neuron(len(self.sample_types)),
+                                                          self.sample_types)
         return AssignmentNeuralNetwork(hidden_layers, output_layer)
 
     def get_new_weights_for_neuron(self, number_of_weights_to_generate):
@@ -90,7 +90,7 @@ class AssignmentNeuralNetworkWithWeighsBuilder:
            # hidden_layers.append(LayerBuilder(RectifiedLinearUnit).build(hidden_layer_weights))
 
        # output_layer = LayerBuilder(ClassifierFunction).build(list(self.output_layer.values()), list(self.output_layer.keys()))
-        output_layer = [Neuron(neuron_weights, ClassifierFunction(neuron_class)) for neuron_class, neuron_weights in self.output_layer.items()]
+        output_layer = [Neuron(neuron_weights, ClassifierRELU(neuron_class)) for neuron_class, neuron_weights in self.output_layer.items()]
 
         network = AssignmentNeuralNetwork(hidden_layers, output_layer)
         return network

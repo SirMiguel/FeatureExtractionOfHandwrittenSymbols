@@ -17,18 +17,18 @@ class RectifiedLinearUnit(ActivationFunction):
         ActivationFunction.__init__(self)
 
     def get_response(self, input):
-        return  max([0.01 * input, input])
+        return  max([0.01 * input, input]) # 1 / (e ** input)
 
     def get_derivative(self, input):
         return 1 if input > 0 else 0  #y = ln(1.0 + e ^ input)  #f′(x)={1,0,if x>0otherwise
 
-class ClassifierFunction(ActivationFunction):
+class ClassifierRELU(RectifiedLinearUnit):
     def __init__(self, class_of_unit):
-        ActivationFunction.__init__(self)
+        RectifiedLinearUnit.__init__(self)
         self.class_of_unit = class_of_unit
 
     def get_response(self, input):
-        return dict({self.class_of_unit : input})
+        return dict({self.class_of_unit : RectifiedLinearUnit.get_response(self, input)})
 
 class Neuron:
     def __init__(self, weight_vector, activation_function):
