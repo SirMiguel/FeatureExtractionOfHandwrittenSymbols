@@ -1,9 +1,7 @@
-from abc import abstractmethod, ABCMeta
-
 from numpy import zeros, mean, std, dot, multiply, transpose, add
 from numpy.random import standard_normal
 
-from feature_extractor.features.neural_networks.NeuralNetwork import AssignmentNeuralNetworkWithWeighsBuilder
+from feature_extractor.features.neural_networks.NeuralNetwork import SymbolRecognitionNeuralNetworkBuilder
 
 
 class Trainer:
@@ -27,12 +25,11 @@ class EvolutionaryTrainer(Trainer):
         return self.fitness_metric.get_fitness(weights)
 
 class NESTrainer(EvolutionaryTrainer):
-    def __init__(self, layer_input_size, layer_depths, fitness_metric, sample_population_size=100, noise_factor=0.5, learning_rate=0.1):
+    def __init__(self, layer_input_size, layer_depths, fitness_metric, sample_population_size=50, noise_factor=5, learning_rate=1):
         EvolutionaryTrainer.__init__(self, layer_input_size, layer_depths, fitness_metric)
         self.sample_population_size = sample_population_size
         self.noise_factor = noise_factor
         self.learning_rate = learning_rate
-
 
     def train(self, fitness_requirement):
         mean_solution = self.get_random_weights_for_network()
@@ -47,6 +44,8 @@ class NESTrainer(EvolutionaryTrainer):
             standardised_rewards_of_directions = self.get_standardised_rewards(direction_rewards)
             mean_solution = self.update_mean_solution(directions_from_mean, mean_solution,
                                                       standardised_rewards_of_directions)
+            mean_solution_fitness = self.get_fitness(mean_solution)
+
             print("mean solution", mean_solution)
             print('\n\n===================================\n')
 
@@ -59,11 +58,12 @@ class NESTrainer(EvolutionaryTrainer):
             direction_headed_from_mean = add(mean_solution,
                                              multiply(self.noise_factor, directions_from_mean[sample_index]))
             direction_rewards[sample_index] = self.get_fitness(direction_headed_from_mean)
+            print("sample", sample_index, "rewards", direction_rewards[sample_index])
         return direction_rewards
 
     def get_standardised_rewards(self, direction_rewards):
-        standardised_rewards_of_directions = (direction_rewards - mean(direction_rewards)) / std(
-            direction_rewards)  # TODO look into noise factor instead of std
+        standardised_rewards_of_directions = (direction_rewards - mean(direction_rewards)) / (std(direction_rewards)  + 0.0001)#(self.sample_population_size / self.noise_factor )
+           # direction_rewards)  # TODO look into noise factor instead of std
         return standardised_rewards_of_directions
 
     def update_mean_solution(self, directions_from_mean, mean_solution, standardised_rewards_of_directions):
@@ -91,9 +91,10 @@ class FitnessMetric:
 
 
 class AssignmentNeuralNetworkFitnessMetric(FitnessMetric):
-    def __init__(self, labeled_samples):
+    def __init__(self, labeled_samples, sample_types):
         FitnessMetric.__init__(self)
         self.labeled_samples = labeled_samples
+        self.sample_types = sample_types
 
     def get_fitness(self, candidate_weights):
         candidate_network = self.get_candidate_network(candidate_weights)
@@ -105,14 +106,6 @@ class AssignmentNeuralNetworkFitnessMetric(FitnessMetric):
         return sum(responses_accuracy)
 
     def get_candidate_network(self, network_weights):
-        sample_types = [1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 200, 300]
-        hidden_layer_weights = []
-        for layer_weights in network_weights[:-1]:
-            hidden_layer_weights.append(layer_weights)
-
-        output_layer_data = dict()
+        hidden_layer_weights = network_weights[:-1]
         output_layer_weights = network_weights[-1]
-        for sample_type, neuron_weights in zip(sample_types, output_layer_weights):
-            output_layer_data.update({sample_type: neuron_weights})
-
-        return AssignmentNeuralNetworkWithWeighsBuilder(hidden_layer_weights, output_layer_data).build()
+        return SymbolRecognitionNeuralNetworkBuilder(hidden_layer_weights, output_layer_weights, self.sample_types).build()

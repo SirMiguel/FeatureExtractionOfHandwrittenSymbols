@@ -5,7 +5,6 @@ from ioer.SampleOutputNameBuilder import SampleOutputNameBuilder
 from ioer.SamplesIO import SamplesIO
 from sample.Sample import Sample
 
-
 class SampleSetIO(SamplesIO):
     def __init__(self, directory_separator = "/"):
         SamplesIO.__init__(self, directory_separator)
@@ -19,10 +18,10 @@ class SampleSetIO(SamplesIO):
         output_location = LocationBuilder().build(save_location, sample_set.sample_code)
         self.write_samples_to_file_as_csv(output_name_builder, sample_set.samples, output_location)
 
-    def get_all_sample_sets(self, sample_sets_to_get, samples_home_directory, file_extension):
+    def get_all_sample_sets(self, sample_sets_to_get, samples_home_directory):
         sample_sets = []
         for sample_type in sample_sets_to_get:
-            sample_images_of_type = self.get_samples_from_file(LocationBuilder().build(samples_home_directory, sample_type["location"]), file_extension)
+            sample_images_of_type = self.get_samples_from_file(LocationBuilder().build(samples_home_directory, sample_type["location"]), "csv")
             samples_of_type = []
             for sample_image, sample_index in zip(sample_images_of_type, range(len(sample_images_of_type))):
                 samples_of_type.append(Sample(sample_type["sample_code"], sample_index + 1, sample_image))

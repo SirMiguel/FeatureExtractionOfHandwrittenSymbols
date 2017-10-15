@@ -1,6 +1,4 @@
-
 class Image:
-
     def __init__(self, pixels, image_width, image_height):
         self.pixels = pixels
         self.width = image_width

@@ -1,4 +1,3 @@
-
 class Pixel:
     def __init__(self, colour):
         self.value = colour

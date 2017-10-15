@@ -43,15 +43,15 @@
     },
     {
       "sample_code": "100",
-      "location": "/Smiley"
+      "location": "/100"
     },
     {
       "sample_code": "200",
-      "location": "/Sad"
+      "location": "/200"
     },
     {
       "sample_code": "300",
-      "location": "/!"
+      "location": "/300"
     }
   ]
 }

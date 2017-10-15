@@ -1,10 +1,29 @@
 from PIL import Image
-from os import access
+from os import access, path, makedirs
 import csv
+import json
 
 class IO:
     def __init__(self, directory_separator="/"):
         self.directory_separator = directory_separator
+
+    def open_json_file_as_map(self, file_location, file_name):
+        json_string = self.open_json_file(file_location, file_name)
+        json_map = json.loads(json_string)
+        return json_map
+
+    def open_json_file(self, file_location, file_name):
+        with open(file_location + self.directory_separator + file_name, "r") as file:
+            json_string = file.read()
+            file.close()
+        return json_string
+
+    def write_json_file(self, json_data, file_location, file_name):
+        with self.get_file_to_write(file_name, file_location) as file:
+            json.dump(json_data, file)
+            #json_string = file.read()
+         #   file.close()
+        #return json_string
 
     def write_file(self, file, location, file_name):
         with self.get_file_to_write(file_name, location) as file:
@@ -13,10 +32,17 @@ class IO:
             file.close()
 
     def write_csv(self, csv_file, location, file_name):
-        with self.get_file_to_write(file_name, location) as file:
+        with self.get_file_to_write(file_name + ".csv", location) as file:
             csv_writer = csv.writer(file)
             for row in csv_file:
-                csv_writer.writerow(row)
+                csv_writer.writerow([row])
+            file.close()
+
+    def write_as_single_line_csv(self, csv_file, location, file_name):
+        with self.get_file_to_write(file_name + ".csv", location) as file:
+            csv_writer = csv.writer(file)
+            #for row in csv_file:
+            csv_writer.writerow(csv_file)
             file.close()
 
     def read_file(self, file_name, location):
@@ -38,7 +64,8 @@ class IO:
         return open(self.get_file_path(file_name, location), "r")
 
     def get_file_to_write(self, file_name, location):
-        return open(self.get_file_path(file_name, location), "w")
+        self.create_directory(location)
+        return open(self.get_file_path(file_name, location + "/"), "w")
 
     def get_file_path(self, file_name, location):
         return location + file_name
@@ -49,3 +76,7 @@ class IO:
 
     def can_access_file(self, filename, location):
         return access(self.get_file_path(filename, location), 0)
+
+    def create_directory(self, save_location):
+        if not path.exists(save_location):
+            makedirs(save_location)

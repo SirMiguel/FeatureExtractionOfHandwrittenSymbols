@@ -22,21 +22,18 @@ class PixelNeighbours:
             return self.null_pixel_value
         else:
             return image.get_pixel(pixel_x, pixel_y -1)
-        #TODO check later if need to add get value
 
     def get_upper_left_neighbour(self, image, pixel_x, pixel_y):
         if self.is_pixel_left_border(pixel_x) or self.is_pixel_top_border(pixel_y):
             return self.null_pixel_value
         else:
             return image.get_pixel(pixel_x - 1, pixel_y - 1)
-        #TODO check later if need to add get value
 
     def get_upper_right_neighbour(self, image, pixel_x, pixel_y):
         if self.is_pixel_right_border(image.get_width(), pixel_x) or self.is_pixel_top_border(pixel_y):
             return self.null_pixel_value
         else:
             return image.get_pixel(pixel_x + 1, pixel_y - 1)
-        #TODO check later if need to add get value
 
     def get_right_neighbour(self, image, pixel_x, pixel_y):
         if self.is_pixel_right_border(image.get_width(), pixel_x):
@@ -50,21 +47,18 @@ class PixelNeighbours:
             return self.null_pixel_value
         else:
             return image.get_pixel(pixel_x - 1, pixel_y)
-            # TODO check later if need to add get value
 
     def get_lower_right_neighbour(self, image, pixel_x, pixel_y):
         if self.is_pixel_right_border(image.get_width(), pixel_x) or self.is_pixel_bottom_border(image.get_width(), pixel_y):
             return self.null_pixel_value
         else :
             return image.get_pixel(pixel_x + 1, pixel_y + 1)
-        #TODO check later if need to add get value
 
     def get_lower_neighbour(self, image, pixel_x, pixel_y):
         if self.is_pixel_bottom_border(image.get_width(), pixel_y):
             return self.null_pixel_value
         else:
             return image.get_pixel(pixel_x, pixel_y + 1)
-        #TODO check later if need to add get value
 
     def get_lower_left_neighbour(self, image, pixel_x, pixel_y):
         if self.is_pixel_left_border(pixel_x) or self.is_pixel_bottom_border(image.get_width(), pixel_y):

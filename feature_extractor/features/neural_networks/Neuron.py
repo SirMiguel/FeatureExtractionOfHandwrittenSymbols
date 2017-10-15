@@ -1,4 +1,4 @@
-from numpy import log, exp, dot, e
+from numpy import dot
 
 class ActivationFunction:
     def __init__(self):
@@ -17,10 +17,10 @@ class RectifiedLinearUnit(ActivationFunction):
         ActivationFunction.__init__(self)
 
     def get_response(self, input):
-        return  max([0.01 * input, input]) # 1 / (e ** input)
+        return  max([0.01 * input, input])
 
     def get_derivative(self, input):
-        return 1 if input > 0 else 0  #y = ln(1.0 + e ^ input)  #f′(x)={1,0,if x>0otherwise
+        return 1 if input > 0 else 0
 
 class ClassifierRELU(RectifiedLinearUnit):
     def __init__(self, class_of_unit):
