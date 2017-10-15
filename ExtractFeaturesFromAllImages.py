@@ -47,7 +47,7 @@ for sample_set in sample_sets:
         sample_set_assignment_feature_vector.append(image_feature_vector)
         io.write_as_single_line_csv(image_feature_vector, sample_set_features_output_location, output_name_builder.build(sample.sample_number, "features"))
 
-    features_of_samples = transpose(array(array(sample_set_assignment_feature_vector[1:]).astype(int), array(sample_set_assignment_feature_vector[1:]).astype(float)))
+    features_of_samples = transpose(array(sample_set_assignment_feature_vector[1:]).astype(float))
     mean_features_of_image_samples = []
     median_features_of_image_samples = []
     for feature_results in features_of_samples:
