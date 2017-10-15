@@ -25,7 +25,7 @@ class EvolutionaryTrainer(Trainer):
         return self.fitness_metric.get_fitness(weights)
 
 class NESTrainer(EvolutionaryTrainer):
-    def __init__(self, layer_input_size, layer_depths, fitness_metric, sample_population_size=20, noise_factor=0.1, learning_rate=1):
+    def __init__(self, layer_input_size, layer_depths, fitness_metric, sample_population_size=500, noise_factor=0.1, learning_rate=1):
         EvolutionaryTrainer.__init__(self, layer_input_size, layer_depths, fitness_metric)
         self.sample_population_size = sample_population_size
         self.noise_factor = noise_factor
@@ -36,6 +36,7 @@ class NESTrainer(EvolutionaryTrainer):
         number_of_generations = 0
         mean_solution_fitness = self.get_fitness(mean_solution)
         while mean_solution_fitness < fitness_requirement:
+            self.learning_rate /= 2
             print("Generation", number_of_generations)
             print("mean solution's accuracy:", mean_solution_fitness)
 

@@ -35,7 +35,7 @@ class IO:
         with self.get_file_to_write(file_name + ".csv", location) as file:
             csv_writer = csv.writer(file)
             for row in csv_file:
-                csv_writer.writerow([row])
+                csv_writer.writerow(row)
             file.close()
 
     def write_as_single_line_csv(self, csv_file, location, file_name):
