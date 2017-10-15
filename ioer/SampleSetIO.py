@@ -27,3 +27,13 @@ class SampleSetIO(SamplesIO):
                 samples_of_type.append(Sample(sample_type["sample_code"], sample_index + 1, sample_image))
             sample_sets.append(SampleSet(sample_type["sample_code"], samples_of_type))
         return sample_sets
+
+    def get_all_unprocessed_sample_sets(self, sample_sets_to_get, samples_home_directory):
+        sample_sets = []
+        for sample_type in sample_sets_to_get:
+            sample_images_of_type = self.get_unprocessed_samples_from_file(LocationBuilder().build(samples_home_directory, sample_type["location"]), "csv")
+            samples_of_type = []
+            for sample_image, sample_index in zip(sample_images_of_type, range(len(sample_images_of_type))):
+                samples_of_type.append(Sample(sample_type["sample_code"], sample_index + 1, sample_image))
+            sample_sets.append(SampleSet(sample_type["sample_code"], samples_of_type))
+        return sample_sets

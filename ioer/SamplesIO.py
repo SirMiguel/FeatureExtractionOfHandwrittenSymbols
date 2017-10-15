@@ -26,10 +26,10 @@ class SamplesIO(IO):
         for sample in samples:
             IO.write_csv(self, sample.sample_image,
                          save_location,
-                         output_name_builder.build(sample.sample_number) + ".csv")
+                         output_name_builder.build(sample.sample_number))
 
     def get_full_filename_of_sample(self, sample, pre_appended_name = "", separator = ""):
         return pre_appended_name + separator + sample.get_sample_fullname(separator)
 
     def is_file(self, filename, file_extension):
-        return re.match(".+\.[" + file_extension + "]", filename)
+        return re.match(".+[." + file_extension + "]", filename)

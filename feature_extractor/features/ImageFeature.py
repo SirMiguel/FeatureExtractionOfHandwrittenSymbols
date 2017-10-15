@@ -16,7 +16,6 @@ class ImageFeature:
                 selfaware_pixels.append(SelfAwarePixel(pixel_x, pixel_y, pixel, pixel_neighbours))
         return selfaware_pixels
 
-
 class ColouredPixels(ImageFeature):
     def __init__(self, pixel_colour, null_pixel_colour):
         ImageFeature.__init__(self, null_pixel_colour)
@@ -140,7 +139,6 @@ class ColouredPixelsWithNoNamedColouredNeighbours(ColouredPixels):
             if self.check_neighbours_do_not_contain_forbidden_colour(coloured_selfaware_pixel.get_neighbours()):
                 pixels_not_containing_neighbours_with_forbidden_colour.append(coloured_selfaware_pixel)
         return pixels_not_containing_neighbours_with_forbidden_colour
-
 
     def check_neighbours_do_not_contain_forbidden_colour(self, pixel_neighbours):
         for neighbour_to_check in self. neighbours_without_colour:
@@ -375,7 +373,7 @@ class NeuralNetworkFeature(ImageFeature):
     def get_network_thoughts(self, pixel_colour_vector):
         return self.neural_network.think(pixel_colour_vector)
 
-class LengthOfFeatureExtractor(ImageFeature):
+class LengthOfFeature(ImageFeature):
     def __init__(self, image_feature, null_pixel_value):
         ImageFeature.__init__(self, null_pixel_value)
         self.image_feature = image_feature

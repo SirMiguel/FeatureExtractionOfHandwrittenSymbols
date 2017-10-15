@@ -21,7 +21,7 @@ sample_types = []
 for sample_type_dictionary in samples_sets_map["sample_types"]:
     sample_types.append(sample_type_dictionary["sample_code"])
 
-network_trainer = NESTrainer((256, 16, 8), (16, 8, 12), AssignmentNeuralNetworkFitnessMetric(training_samples, sample_types))
+network_trainer = NESTrainer((256, 6, 4), (6, 4, 12), AssignmentNeuralNetworkFitnessMetric(training_samples, sample_types))
 weights = network_trainer.train(160)
 
 hidden_layers_weights = weights[:-1]
@@ -35,7 +35,7 @@ output_layer_weights_json = output_layer_weights.tolist()
 assignment_network_weights = dict({"symbol_recognition_network_weights" : {
     "hidden_layer_weights" : hidden_layers_weights_json,
     "output_layer_weights" : output_layer_weights_json
-}
-})
+}})
+
 IO().write_json_file(assignment_network_weights, home_directory, "symbol_recognition_network_weights.json")
 print("done")

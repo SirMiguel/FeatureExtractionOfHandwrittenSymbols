@@ -43,9 +43,8 @@ unprocessed_samples_file_type = unprocessed_sample_data_map["file_type"]
 sample_set_io = SampleSetIO()
 
 # Get all images that need to be converted
-unprocessed_sample_sets = sample_set_io.get_all_sample_sets(sample_types,
-                                                            unprocessed_samples_location,
-                                                            unprocessed_samples_file_type)
+unprocessed_sample_sets = sample_set_io.get_all_unprocessed_sample_sets(sample_types,
+                                                            unprocessed_samples_location)
 
 #convert each sample in type to a binary matrix
 binary_arbitrator_boundary = unprocessed_sample_data_map["binary_arbitrator_boundary"]

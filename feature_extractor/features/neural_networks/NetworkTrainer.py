@@ -25,7 +25,7 @@ class EvolutionaryTrainer(Trainer):
         return self.fitness_metric.get_fitness(weights)
 
 class NESTrainer(EvolutionaryTrainer):
-    def __init__(self, layer_input_size, layer_depths, fitness_metric, sample_population_size=50, noise_factor=5, learning_rate=1):
+    def __init__(self, layer_input_size, layer_depths, fitness_metric, sample_population_size=20, noise_factor=0.1, learning_rate=1):
         EvolutionaryTrainer.__init__(self, layer_input_size, layer_depths, fitness_metric)
         self.sample_population_size = sample_population_size
         self.noise_factor = noise_factor
@@ -58,11 +58,11 @@ class NESTrainer(EvolutionaryTrainer):
             direction_headed_from_mean = add(mean_solution,
                                              multiply(self.noise_factor, directions_from_mean[sample_index]))
             direction_rewards[sample_index] = self.get_fitness(direction_headed_from_mean)
-            print("sample", sample_index, "rewards", direction_rewards[sample_index])
+            #print("sample", sample_index, "rewards", direction_rewards[sample_index])
         return direction_rewards
 
     def get_standardised_rewards(self, direction_rewards):
-        standardised_rewards_of_directions = (direction_rewards - mean(direction_rewards)) / (std(direction_rewards)  + 0.0001)#(self.sample_population_size / self.noise_factor )
+        standardised_rewards_of_directions = (direction_rewards - mean(direction_rewards)) / (std(direction_rewards))#(self.sample_population_size / self.noise_factor )
            # direction_rewards)  # TODO look into noise factor instead of std
         return standardised_rewards_of_directions
 

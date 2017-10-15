@@ -17,7 +17,7 @@ class RectifiedLinearUnit(ActivationFunction):
         ActivationFunction.__init__(self)
 
     def get_response(self, input):
-        return  max([0.01 * input, input])
+        return  max([0, input])
 
     def get_derivative(self, input):
         return 1 if input > 0 else 0
