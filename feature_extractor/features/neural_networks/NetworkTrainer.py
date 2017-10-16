@@ -1,6 +1,6 @@
 from numpy import zeros, mean, std, dot, multiply, transpose, add
-from numpy.random import standard_normal
-
+from numpy.random import standard_normal, randn
+from multiprocessing import Pool
 from feature_extractor.features.neural_networks.NeuralNetwork import SymbolRecognitionNeuralNetworkBuilder
 
 
@@ -25,7 +25,8 @@ class EvolutionaryTrainer(Trainer):
         return self.fitness_metric.get_fitness(weights)
 
 class NESTrainer(EvolutionaryTrainer):
-    def __init__(self, layer_input_size, layer_depths, fitness_metric, sample_population_size=500, noise_factor=0.1, learning_rate=1):
+    def __init__(self, layer_input_size, layer_depths, fitness_metric, sample_population_size=100, noise_factor=0.5, learning_rate=0.01):
+        # Learning rate, noise, and population size require experimentation
         EvolutionaryTrainer.__init__(self, layer_input_size, layer_depths, fitness_metric)
         self.sample_population_size = sample_population_size
         self.noise_factor = noise_factor
@@ -35,13 +36,15 @@ class NESTrainer(EvolutionaryTrainer):
         mean_solution = self.get_random_weights_for_network()
         number_of_generations = 0
         mean_solution_fitness = self.get_fitness(mean_solution)
+        pool = Pool()
+
         while mean_solution_fitness < fitness_requirement:
-            self.learning_rate /= 2
+            #self.learning_rate /= 2
             print("Generation", number_of_generations)
             print("mean solution's accuracy:", mean_solution_fitness)
 
             directions_from_mean = self.get_random_directions()
-            direction_rewards = self.get_direction_rewards(directions_from_mean, mean_solution)
+            direction_rewards = self.get_direction_rewards(pool, directions_from_mean, mean_solution)
             standardised_rewards_of_directions = self.get_standardised_rewards(direction_rewards)
             mean_solution = self.update_mean_solution(directions_from_mean, mean_solution,
                                                       standardised_rewards_of_directions)
@@ -51,20 +54,20 @@ class NESTrainer(EvolutionaryTrainer):
             print('\n\n===================================\n')
 
             number_of_generations += 1
+        pool.close()
         return mean_solution
 
-    def get_direction_rewards(self, directions_from_mean, mean_solution):
-        direction_rewards = zeros(self.sample_population_size)
-        for sample_index in range(self.sample_population_size):
-            direction_headed_from_mean = add(mean_solution,
-                                             multiply(self.noise_factor, directions_from_mean[sample_index]))
-            direction_rewards[sample_index] = self.get_fitness(direction_headed_from_mean)
-            #print("sample", sample_index, "rewards", direction_rewards[sample_index])
+    def get_direction_rewards(self, pool, directions_from_mean, mean_solution):
+        direction_rewards = pool.starmap(self.get_direction_reward, [(directions_from_mean[sample_index], mean_solution) for sample_index in range(len(directions_from_mean))])
         return direction_rewards
 
+    def get_direction_reward(self, direction_from_mean, mean_solution):
+        direction_headed_from_mean = add(mean_solution,
+                                         multiply(self.noise_factor, direction_from_mean))
+        return self.get_fitness(direction_headed_from_mean)
+
     def get_standardised_rewards(self, direction_rewards):
-        standardised_rewards_of_directions = (direction_rewards - mean(direction_rewards)) / (std(direction_rewards))#(self.sample_population_size / self.noise_factor )
-           # direction_rewards)  # TODO look into noise factor instead of std
+        standardised_rewards_of_directions = (direction_rewards - mean(direction_rewards)) / std(direction_rewards)
         return standardised_rewards_of_directions
 
     def update_mean_solution(self, directions_from_mean, mean_solution, standardised_rewards_of_directions):
@@ -80,7 +83,7 @@ class NESTrainer(EvolutionaryTrainer):
         return directions_from_mean
 
     def get_random_weights_for_network(self):
-        return [standard_normal((layer_depth, layer_input_size)) for layer_input_size, layer_depth in zip(self.layer_neuron_input_size, self.network_layers_depths)]
+        return [randn(layer_depth, layer_input_size) for layer_input_size, layer_depth in zip(self.layer_neuron_input_size, self.network_layers_depths)]
 
 
 class FitnessMetric:
@@ -103,7 +106,7 @@ class AssignmentNeuralNetworkFitnessMetric(FitnessMetric):
         for sample_label, sample_input in self.labeled_samples:
             candidate_response = candidate_network.think(sample_input)
             candidate_response = max(candidate_response, key=candidate_response.get)
-            responses_accuracy.append((1 if candidate_response == sample_label else -1))
+            responses_accuracy.append((1 if candidate_response == sample_label else 0))
         return sum(responses_accuracy)
 
     def get_candidate_network(self, network_weights):

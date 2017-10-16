@@ -2,7 +2,8 @@ from ioer.SampleSetIO import SampleSetIO
 from ioer.IO import IO
 from os import getcwd
 from feature_extractor.features.neural_networks.NetworkTrainer import NESTrainer, AssignmentNeuralNetworkFitnessMetric, SymbolRecognitionNeuralNetworkBuilder
-from random import shuffle, sample
+from random import sample
+
 def convert_sample_sets_to_training_samples(sample_sets):
     training_samples = []
     for sample_set in sample_sets:
@@ -22,7 +23,7 @@ sample_types = []
 for sample_type_dictionary in samples_sets_map["sample_types"]:
     sample_types.append(sample_type_dictionary["sample_code"])
 
-network_trainer = NESTrainer((256, 16, 16), (16, 16, 12), AssignmentNeuralNetworkFitnessMetric(training_samples, sample_types))
+network_trainer = NESTrainer((256, 16, 16, 16), (16, 16, 16, 12), AssignmentNeuralNetworkFitnessMetric(training_samples, sample_types))
 weights = network_trainer.train(160)
 
 hidden_layers_weights = weights[:-1]

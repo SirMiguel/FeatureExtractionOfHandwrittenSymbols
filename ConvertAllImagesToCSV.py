@@ -56,5 +56,3 @@ output_data_attributes_map = open_json_file_as_map(home_directory, "processed_sa
 student_number = output_data_attributes_map["student_number"]
 save_location = output_data_attributes_map["samples_location"]
 SampleSetIO().save_sample_sets_as_csv(processed_sample_sets, student_number, save_location)
-
-#sum(*args)

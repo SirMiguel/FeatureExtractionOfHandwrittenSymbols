@@ -1,5 +1,4 @@
 from feature_extractor.features.neural_networks.Neuron import RectifiedLinearUnit, Neuron, ClassifierRELU
-from numpy.random import randn
 
 class NeuralNetwork:
     def __init__(self, hidden_layers, output_layer):
@@ -24,7 +23,6 @@ class DictionaryOutputNeuralNetwork(NeuralNetwork):
         NeuralNetwork.__init__(self, hidden_layers, output_neurons)
         self.output_neuron_keys = output_neuron_keys
 
-
     def think(self, input_vector):
         output_neuron_responses = NeuralNetwork.think(self, input_vector)
         return self.get_output_dictionary(output_neuron_responses)
@@ -43,21 +41,7 @@ class LayerBuilder:
         return [self.get_new_neuron(neuron_weights) for neuron_weights in neurons_weights]
 
     def get_new_neuron(self, neuron_weights):
-        return Neuron(neuron_weights, self.activation_function())
-
-class AssignmentNeuralNetworkWithWeighsBuilder:
-    def __init__(self, hidden_layers_weights, output_layers_data):
-        self.hidden_layers_weights = hidden_layers_weights
-        self.output_layer = output_layers_data
-
-    def build(self):
-        hidden_layers = []
-        for hidden_layer_weights in self.hidden_layers_weights:
-            hidden_layers.append([Neuron(neuron_weights, RectifiedLinearUnit()) for neuron_weights in hidden_layer_weights]) #LayerBuilder(RectifiedLinearUnit).build(hidden_layer_weights))#
-        output_layer_weights = self.output_layer.values()
-        output_layer = [Neuron(neuron_weights, RectifiedLinearUnit()) for neuron_class, neuron_weights in self.output_layer.items()]# LayerBuilder(RectifiedLinearUnit).build(output_layer_weights)#
-        network = DictionaryOutputNeuralNetwork(hidden_layers, output_layer, self.output_layer.keys())
-        return network
+        return Neuron(neuron_weights, self.activation_function)
 
 class SymbolRecognitionNeuralNetworkBuilder:
     def __init__(self, hidden_layers_weights, output_neurons_weights, output_neurons_keys):
@@ -68,7 +52,7 @@ class SymbolRecognitionNeuralNetworkBuilder:
     def build(self):
         hidden_layers = []
         for hidden_layer_weights in self.hidden_layers_weights:
-            hidden_layers.append(LayerBuilder(RectifiedLinearUnit).build(hidden_layer_weights))
-        output_layer = [Neuron(neuron_weights, RectifiedLinearUnit()) for neuron_weights in self.output_neurons_weights]#LayerBuilder(RectifiedLinearUnit).build(self.output_neurons_weights)
+            hidden_layers.append(LayerBuilder(RectifiedLinearUnit()).build(hidden_layer_weights))
+        output_layer = LayerBuilder(RectifiedLinearUnit()).build(self.output_neurons_weights)#[Neuron(neuron_weights, RectifiedLinearUnit()) for neuron_weights in self.output_neurons_weights]#LayerBuilder(RectifiedLinearUnit).build(self.output_neurons_weights)
         network = DictionaryOutputNeuralNetwork(hidden_layers, output_layer, self.output_neurons_keys)
         return network

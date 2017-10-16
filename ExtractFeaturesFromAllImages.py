@@ -8,10 +8,6 @@ from feature_extractor.image.Image import Image
 from ioer.SampleOutputNameBuilder import SampleOutputNameBuilder
 from ioer.LocationBuilder import LocationBuilder
 from numpy import transpose, mean, median, array
-#open all sample sets
-#open network weights
-#create neural network
-#get output layer dict keys
 
 home_directory = getcwd()
 samples_sets_data_map = IO().open_json_file_as_map(home_directory, "processed_sample_sets.json")
@@ -36,6 +32,15 @@ assignment_image_feature_vector = AssignmentImageFeatureVectorBuilder(symbol_rec
                                                                       white_colour,
                                                                       white_colour).build()
 features_output_location = LocationBuilder().build(home_directory, "features")
+
+#for each sample set
+    #for each image
+        #get image feature vector
+        #save image feature vector
+    #get the median value of each feature for all samples in the set
+    #get the mean of each feature for all samples in the set
+    #save mean and median feature vectors
+
 for sample_set in sample_sets:
 
     output_name_builder = SampleOutputNameBuilder(40153628, sample_set.sample_code)
@@ -43,6 +48,7 @@ for sample_set in sample_sets:
     sample_set_assignment_feature_vector = []
     for sample in sample_set.samples:
         image_feature_vector = assignment_image_feature_vector.get_feature_vector(Image(sample.sample_image, len(sample.sample_image), len(sample.sample_image[0])))
+        image_feature_vector[0] = -1000
         print(image_feature_vector)
         sample_set_assignment_feature_vector.append(image_feature_vector)
         io.write_as_single_line_csv(image_feature_vector, sample_set_features_output_location, output_name_builder.build(sample.sample_number, "features"))
@@ -54,23 +60,10 @@ for sample_set in sample_sets:
         mean_features_of_image_samples.append(mean(feature_results))
         median_features_of_image_samples.append(median(feature_results))
 
-    print("MEAN", mean_features_of_image_samples)
-    print("MEDIAN", median_features_of_image_samples)
+
     io.write_as_single_line_csv(median_features_of_image_samples,
                                 sample_set_features_output_location,
                                 output_name_builder.build("median"))
     io.write_as_single_line_csv(mean_features_of_image_samples,
                                 sample_set_features_output_location,
                             output_name_builder.build("mean"))
-
-
-#for each sample set
-    #for each image
-        #get image feature vector
-        #save image feature vector
-    #get the median value of each feature for all samples in the set
-    #get the mean of each feature for all samples in the set
-    #save mean and median feature vectors
-
-
-

@@ -132,69 +132,6 @@ class AssignmentImageFeatureVectorBuilder:
         assignment_features.append(ConnectedColourRegionsInImage(self.white_pixel_colour, self.black_pixel_colour))  # todo check
         return AssignmentImageFeatureVector(assignment_features)
 
-#
-# #         print("1. Actual symbol in image.", feature_one.get_feature(image))
-# #         print("2. Number of black pixels in the image.", len(feature_two.get_feature(image)))
-# #   print("3. Number of black pixels with black pixel neighbours at", colour_matching_neighbours,
-# #              len(feature_three.get_feature(image)))
-# #         print("4. Number of black pixels with at most 3 black pixel neighbours.", len(feature_four.get_feature(image)))
-# #        print("5. Number of black pixels with exactly 4 black pixel neighbours.", len(feature_five.get_feature(image)))
-# #        print("6. Number of black pixels with 5 or more black pixel neighbours.", len(feature_six.get_feature(image)))
-# # print("7. Number of black pixels with NO black pixel neighbours at any of ", forbidden_colour_neighbours_one,
-# #        print("8. Number of black pixels with NO black pixel neighbours at any of", forbidden_colour_neighbours_two,
-# # print("9. Number of black pixels with NO black pixel neighbours at any of",
-# #              forbidden_colour_neighbours_three,
-# #              len(feature_nine.get_feature(image)))
-#  print("10. Number of black pixels with NO black pixel neighbours at any of",
-#               forbidden_colour_neighbours_four,
-#               len(feature_ten.get_feature(image)))
-# print(
-#             "11. Number of black pixels (satisfying the condition of Rule 7) OR (satisfying the condition of Rule 8).",
-#             len(feature_eleven.get_feature(image)))
-# print(
-#     "12. Number of black pixels (satisfying the condition of Rule 9) OR (satisfying the condition of Rule 10).",
-#     len(feature_twelve.get_feature(image)))
-# print("13. Number of black pixels with NO black pixel neighbours at any of",
-#               feature_thirteen_colour_neighbours_excluded, len(feature_thirteen.get_feature(image)))
-# print("14. Number of black pixels with NO black pixel neighbours at any of",
-#       feature_fourteen_colour_neighbours_excluded, len(feature_fourteen.get_feature(image)))
-# print("15. Number of black pixels with NO black pixel neighbours at any of",
-#       feature_fifteen_colour_neighbours_excluded, len(feature_fifteen.get_feature(image)))
-# print("16. Number of black pixels with NO black pixel neighbours at any of",
-#       feature_sixteen_colour_neighbours_excluded, len(feature_sixteen.get_feature(image)))
-# print(
-#             "17. Number of black pixels (satisfying the condition of Rule 13) OR (satisfying the condition of Rule 14).",
-#             len(feature_seventeen.get_feature(image)))
-# print(
-#             "18. Number of black pixels (satisfying the condition of Rule 15) OR (satisfying the condition of Rule 16).",
-#             len(feature_eighteen.get_feature(image)))
-# print(
-#             "19. Number of black pixels (satisfying the condition of Rule 11) OR (satisfying the condition of Rule 12).",
-#             len(feature_nineteen.get_feature(image)))
-# print(
-#     "20. Number of black pixels (satisfying the condition of Rule 17) OR (satisfying the condition of Rule 18).",
-#     len(feature_twenty.get_feature(image)))
-# print("21. Number of rows with at least one black pixel.", len(feature_twenty_one.get_feature(image)))
-# print("22. Number of columns with at least one black pixel.", len(feature_twenty_two.get_feature(image)))
-# print("23. Number of rows with at least five black pixels.", len(feature_twenty_three.get_feature(image)))
-# print("24. Number of columns with at least five black pixels.", len(feature_twenty_four.get_feature(image)))
-# print("""25. Two black pixels A and B are connected if they are neighbours of each other, or if a black
-#                pixel neighbour of A is connected to B (this definition is actually symmetric); a connected
-#                region is a set of black pixels which are connected to each other; this feature has the number
-#                of connected regions in the image""", len(feature_twenty_five.get_feature(image)))
-# print("26. Percentage of black pixels with at most 3 black pixel neighbours.",
-#       feature_twenty_six.get_feature(image))
-# print("27. Percentage of black pixels with exactly 4 black pixel neighbours.",
-#               feature_twenty_seven.get_feature(image))
-# print("28. Percentage of black pixels with 5 or more black pixel neighbours.",
-#               feature_twenty_eight.get_feature(image))
-# print(
-#             "29. (Number of rows with at least five black pixels) minus (number of columns with at least five black pixels).",
-#             (feature_twenty_nine.get_feature(image)))
-# print(
-#             "30. The number of background areas in the image. A background area is defined as an area of only white pixels. This is useful for detecting areas of loops/rings in an image"
-#             ", as the interior of the ring will be an area of background colour",
-
 class AssignmentImageFeatureVector:
 
     def __init__(self, image_features):

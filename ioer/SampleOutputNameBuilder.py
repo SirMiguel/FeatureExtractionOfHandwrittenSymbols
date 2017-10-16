@@ -9,5 +9,4 @@ class SampleOutputNameBuilder:
         output_name = (str(self.student_number) + self.separator + str(self.sample_code))
         for arg in args:
             output_name += self.separator + str(arg)
-        return output_name#(str(self.student_number) + self.separator + str(self.sample_code) +
-                #self.separator + str(sample_number))
+        return output_name
